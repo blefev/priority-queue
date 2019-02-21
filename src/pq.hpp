@@ -15,6 +15,8 @@ public:
     // desc: Inializes a new, empty queue
 	PQ();
 
+	Node<T>* makeNode(T val, int priority, Node<T>* nextNode);
+
     // desc:    Adds new data to the queue
     // param:   data The data to add to the list
     // param:   priority The priority assigned to this node
@@ -55,31 +57,73 @@ void PQ<T>::enqueue(T &data, int priority)
 {
     Node<T> *new_node = new Node<T>(data, priority);
 
+	Node<T>* newNode = new Node<T>(data, priority);
+	newNode->set_data(data);
+
+	Node<T>** dblNodePtr = &(this->head);
+
+	// TODO make sure this works properly
+	while(*dblNodePtr && (*dblNodePtr)->priority < priority)
+		dblNodePtr = &(*dblNodePtr)->next;
+
+
+	*dblNodePtr = makeNode(data, priority, &(**dblNodePtr));
 }
 
 template<class T>
 void PQ<T>::dequeue(void)
 {
+	if(!this->head) return;
+
+	Node<T>* toShift = this->head->next;
+	delete this->head;
+	this->head = toShift;
 }
 
 template<class T>
 T  PQ<T>::get_front()
 {
+	if (this->head) {
+		return this->head->get_data();
+	}
+	return 0;
 }
 
 template<class T>
 bool PQ<T>::isEmpty()
 {
+	return this->head == NULL;
 }
 
 template<class T>
 void PQ<T>::clear(void)
 {
+	while(this->head)
+	{
+		Node<T>* toDelete = this->head;
+		this->head = this->head->next;
+		delete toDelete;
+	}
 }
 
 
 template<class T>
 int PQ<T>::get_count(void)
 {
+	unsigned int count = 0;
+
+	Node<T>* node = this->head;
+	while (node) {
+		node = node->get_next();
+		count++;
+	}
+	return count;
 }
 
+template<class T>
+Node<T>* PQ<T>::makeNode(T val, int priority, Node<T>* nextNode)
+{
+	Node<T>* madeNode = new Node<T>(val, priority);
+	madeNode->set_next(nextNode);
+	return madeNode;
+}

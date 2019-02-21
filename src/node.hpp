@@ -2,11 +2,10 @@
 #include <cstddef>
 template<class T>
 class Node{
-    private:
+    public:
         T data;
         int priority;
         Node<T> *next;
-    public:
        Node(void);
        Node(T &data);
        Node(T &data, int prio);
